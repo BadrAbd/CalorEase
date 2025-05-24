@@ -44,18 +44,30 @@ const SignUp = () => {
     setLoading(true);
     setButtonDisabled(true);
     if (validateInputs()) {
-      await UserSignUp({ name, email, password })
-        .then((res) => {
-          dispatch(loginSuccess(res.data));
-          alert("Account Created Success");
-          setLoading(false);
-          setButtonDisabled(false);
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-          setLoading(false);
-          setButtonDisabled(false);
-        });
+      try {
+        const response = await UserSignUp({ name, email, password });
+        
+        // Check if response exists and has data property
+        if (response && response.data) {
+          dispatch(loginSuccess(response.data));
+          alert("Account Created Successfully");
+        } else {
+          // Handle case where response exists but doesn't have expected structure
+          console.error("Invalid response format:", response);
+          alert("Sign up successful, but there was an issue with the server response. Please try logging in.");
+        }
+      } catch (err) {
+        console.error("Sign up error:", err);
+        // Safely access error message if available
+        const errorMessage = err.response?.data?.message || "An error occurred during sign up. Please try again.";
+        alert(errorMessage);
+      } finally {
+        setLoading(false);
+        setButtonDisabled(false);
+      }
+    } else {
+      setLoading(false);
+      setButtonDisabled(false);
     }
   };
   return (

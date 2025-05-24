@@ -9,31 +9,51 @@ dotenv.config();
 
 export const UserRegister = async (req, res, next) => {
   try {
+    console.log("Registration attempt with data:", { ...req.body, password: "[REDACTED]" });
+
     const { email, password, name, img } = req.body;
 
+    // Validate required fields
+    if (!email || !password || !name) {
+      console.log("Registration failed: Missing required fields");
+      return next(createError(400, "Email, password, and name are required fields."));
+    }
+
     // Check if the email is in use
+    console.log("Checking if email is already in use:", email);
     const existingUser = await User.findOne({ email }).exec();
     if (existingUser) {
+      console.log("Registration failed: Email already in use");
       return next(createError(409, "Email is already in use."));
     }
 
+    console.log("Creating password hash");
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
+    console.log("Creating new user document");
     const user = new User({
       name,
       email,
       password: hashedPassword,
       img,
     });
+
+    console.log("Saving user to database");
     const createdUser = await user.save();
+    console.log("User saved successfully with ID:", createdUser._id);
+
     // Use a default JWT secret if environment variable isn't available
     const jwtSecret = process.env.JWT || "fitnesstrack-default-secret-key";
+    console.log("Generating JWT token");
     const token = jwt.sign({ id: createdUser._id }, jwtSecret, {
       expiresIn: "9999 years",
     });
-    return res.status(200).json({ token, user });
+
+    console.log("Registration successful, sending response");
+    return res.status(200).json({ token, user: createdUser });
   } catch (error) {
+    console.error("Registration error:", error);
     return next(error);
   }
 };

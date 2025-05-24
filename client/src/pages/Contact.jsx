@@ -243,7 +243,7 @@ const Contact = () => {
               <InfoIcon>📞</InfoIcon>
               <InfoText>
                 <InfoTitle>Phone Number</InfoTitle>
-                <InfoValue>+1 (555) 123-4567</InfoValue>
+                <InfoValue>+ 212 656589222</InfoValue>
               </InfoText>
             </InfoItem>
             <InfoItem>
@@ -257,7 +257,7 @@ const Contact = () => {
               <InfoIcon>⏰</InfoIcon>
               <InfoText>
                 <InfoTitle>Working Hours</InfoTitle>
-                <InfoValue>Monday - Friday: 9AM - 6PM</InfoValue>
+                <InfoValue>Monday - Friday: 9AM - 10PM</InfoValue>
               </InfoText>
             </InfoItem>
           </ContactInfo>
